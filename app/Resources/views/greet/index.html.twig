@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div id="wrapper">
+        <div id="container">
+            <div id="welcome">
+                <h1><span>Hello </span> {{ person.name }}</h1>
+                <p>Your birthday is {{ person.birthDate | date }}</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
