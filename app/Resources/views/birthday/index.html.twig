@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div id="wrapper">
+        <div id="container">
+            <div id="welcome">
+                {% if persons is empty %}
+                    No rockstars born today.
+                {% endif %}
+                {% for person in persons %}
+                <p>{{ person.name }} is born today at {{ person.birthDate | date('h:i') }}</p>
+              {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

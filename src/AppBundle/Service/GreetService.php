@@ -8,6 +8,6 @@ class GreetService
 {
     public function getNameFromRequest(Request $request): string
     {
-        return $request->get('name');
+        return $request->get('name') ?? '';
     }
 }

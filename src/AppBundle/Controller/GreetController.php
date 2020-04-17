@@ -3,10 +3,15 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Person;
+use AppBundle\Repository\PersonRepository;
 use AppBundle\Service\GreetService;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class GreetController extends Controller
@@ -37,11 +42,22 @@ class GreetController extends Controller
     {
         $name = $this->greetService->getNameFromRequest($request);
 
-        /** @var Person $person */
-        $person = $this->entityManager->getRepository(Person::class)->findOneBy(['name' => $name]);
+        if (!empty($name)) {
+            /** @var PersonRepository $repository */
+            $repository = $this->entityManager->getRepository(Person::class);
 
-        return $this->render('greet/index.html.twig', [
-            'person' => $person,
-        ]);
+            /** @var Person $person */
+            $person = $repository->findOneBy(['name' => $name]);
+
+            if (!$person) {
+                throw new NotFoundHttpException(sprintf('Person with name %s not found', $name));
+            }
+
+            return $this->render('greet/index.html.twig', [
+                'person' => $person,
+            ]);
+        }
+
+        throw new BadRequestHttpException('name is required parameter');
     }
 }
